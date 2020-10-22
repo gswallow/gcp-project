@@ -6,6 +6,7 @@
 # Create a new service account for the project
 # - Give it access to the shared VPC if it exists.
 
+# Roles for the Application Default service account
 resource "google_organization_iam_member" "folder_admin" {
   org_id = data.google_organization.org.org_id
   role   = "roles/resourcemanager.folderAdmin"
@@ -24,12 +25,13 @@ resource "google_organization_iam_member" "project_deleter" {
   member = "domain:${data.google_organization.org.domain}"
 }
 
-resource "google_organization_iam_member" "project_mover" { org_id = data.google_organization.org.org_id
+resource "google_organization_iam_member" "project_mover" {
+  org_id = data.google_organization.org.org_id
   role   = "roles/resourcemanager.projectMover"
   member = "domain:${data.google_organization.org.domain}"
 }
 
-# The application default account needs the folder creator role
+# Create a for loop that maps folders and projects
 resource "google_folder" "folder" {
   display_name = var.folder_name
   parent = data.google_organization.org.name
