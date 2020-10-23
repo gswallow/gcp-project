@@ -31,21 +31,26 @@ resource "google_organization_iam_member" "project_mover" {
   member = "domain:${data.google_organization.org.domain}"
 }
 
-# Create a for loop that maps folders and projects
-resource "google_folder" "folder" {
-  display_name = var.folder_name
-  parent = data.google_organization.org.name
+module "google_folder" {
+  source = "./modules/folder"
+  for_each = toset(var.folders)
+
+  parent_org_id = data.google_organization.org.name
+  folder_name   = each.value
+  depends_on    = [google_organization_iam_member.folder_admin, google_organization_iam_member.project_creator]
 }
 
-resource "google_project" "project" {
-  name   = var.project_name
-  project_id = replace("${var.org_domain}-${var.project_name}", ".", "-")
-  folder_id = google_folder.folder.name
-  billing_account = var.billing_account_id
-}
+module "google_project" {
+  source   = "./modules/project"
+  for_each = { for project in var.projects : project.project_name => project }
 
-resource "google_project_service" "enabled_apis" {
-  count = length(var.enabled_apis)
-  project = google_project.project.project_id
-  service = var.enabled_apis[count.index]
+  billing_account_id = var.billing_account_id
+  org_name           = var.org_domain
+#  folder_name        = each.value.folder_name
+  folder_name        = module.google_folder["${each.value.folder_name}"].folder_name
+  project_name       = each.value.project_name
+  project_users      = each.value.project_users
+  enabled_apis       = each.value.enabled_apis
+
+  depends_on = [module.google_folder]
 }

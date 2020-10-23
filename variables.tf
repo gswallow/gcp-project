@@ -15,28 +15,57 @@ variable "billing_account_id" {
   type        = string
 }
 
-variable "folder_name" {
-  description = "The name of a folder to create for Google Projects"
-  type        = string
-  default     = "default"
-}
-
 variable "budget_amount" {
   description = "The amount of money to use for a budget alert"
   type        = number
   default     = 10
 }
 
-variable "project_name" {
-  description = "The name of the project to create"
-  type        = string
+variable "folders" {
+  description = "A list of folders to create"
+  type        = list(string)
+  default     = ["non-prod", "prod"]
 }
 
-variable "enabled_apis" {
-  description = "The list of APIs to enable for the project"
+variable "projects" {
+  description = "A list of objects including folder names, projects, and IAM principals"
+  type        = list(object({ folder_name = string, project_name = string, project_users = list(string), enabled_apis = list(string) }))
+  default = [
+    {
+      folder_name   = "non-prod",
+      project_name  = "dev",
+      project_users = ["greg@theoperatorisdrunk.com"],
+      enabled_apis  = []
+    },
+    {
+      folder_name   = "non-prod",
+      project_name  = "qa",
+      project_users = ["greg@theoperatorisdrunk.com"],
+      enabled_apis  = []
+    },
+    {
+      folder_name   = "non-prod",
+      project_name  = "uat",
+      project_users = ["greg@theoperatorisdrunk.com"],
+      enabled_apis  = []
+    },
+    {
+      folder_name   = "prod",
+      project_name  = "prod",
+      project_users = ["greg@theoperatorisdrunk.com"],
+      enabled_apis  = []
+    }
+  ]
+}
+
+variable "default_enabled_apis" {
+  description = "The default list of APIs to enable for each project"
   type        = list(string)
   default = [
-    "compute.googleapis.com", "replicapool.googleapis.com", "replicapoolupdater.googleapis.com", "resourceviews.googleapis.com",
+    "compute.googleapis.com",
+    "replicapool.googleapis.com",
+    "replicapoolupdater.googleapis.com",
+    "resourceviews.googleapis.com",
     "storage-component.googleapis.com",
     "storagetransfer.googleapis.com",
     "servicenetworking.googleapis.com",
@@ -65,7 +94,5 @@ locals {
   labels = merge({
     OrganizationId = var.org_domain
     BillingAccount = var.billing_account_id
-    Folder         = var.folder_name
-    Project        = var.project_name
   }, var.labels)
 }
