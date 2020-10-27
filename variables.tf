@@ -11,7 +11,7 @@ variable "org_domain" {
 }
 
 variable "billing_account_id" {
-  description = "The ID of hte billing account with which to associate this project"
+  description = "The ID of the billing account with which to associate this project"
   type        = string
 }
 
@@ -23,8 +23,29 @@ variable "budget_amount" {
 
 variable "folders" {
   description = "A list of folders to create"
-  type        = list(string)
-  default     = ["non-prod", "prod"]
+  type        = list(object({ name = string, editors = list(string), viewers = list(string) }))
+  default     = [
+    {
+      name = "non-prod",
+      editors = [
+        "user:noah@theoperatorisdrunk.com",
+        "user:nami@theoperatorisdrunk.com"
+      ],
+      viewers = [
+        "user:madeline@theoperatorisdrunk.com"
+      ]
+    },
+    {
+      name = "prod",
+      editors = [
+      ],
+      viewers = [
+        "user:noah@theoperatorisdrunk.com",
+        "user:nami@theoperatorisdrunk.com",
+        "user:madeline@theoperatorisdrunk.com"
+      ]
+    }
+  ]
 }
 
 variable "projects" {
