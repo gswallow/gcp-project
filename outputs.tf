@@ -26,14 +26,10 @@ output "client_config_zone" {
   value = data.google_client_config.client.zone
 }
 
-#output "client_config_access_token" {
-#  value = data.google_client_config.client.access_token 
-#}
-
 output "client_openid_userinfo" {
   value = data.google_client_openid_userinfo.client.email
 }
 
-#output "google_projects" {
-#  value = data.google_projects.projects.projects
-#}
+output "vpc_service_projects" { 
+  value = module.google_network["non-prod"].service_projects
+}

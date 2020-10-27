@@ -31,6 +31,12 @@ resource "google_organization_iam_member" "project_mover" {
   member = "domain:${data.google_organization.org.domain}"
 }
 
+resource "google_organization_iam_member" "enable_xpn_host" {
+  org_id = data.google_organization.org.org_id
+  role   = "roles/compute.xpnAdmin"
+  member = "domain:${data.google_organization.org.domain}"
+}
+
 module "google_folder" {
   source = "./modules/folder"
   for_each = { for folder in var.folders : folder.name => folder }
@@ -44,7 +50,7 @@ module "google_folder" {
 
 module "google_project" {
   source   = "./modules/project"
-  for_each = { for project in var.projects : project.project_name => project }
+  for_each = { for project in var.projects : project.identifier => project }
 
   billing_account_id = var.billing_account_id
   org_name           = var.org_domain
@@ -54,4 +60,18 @@ module "google_project" {
   enabled_apis       = each.value.enabled_apis
 
   depends_on = [module.google_folder]
+}
+
+module "google_network" {
+  source = "./modules/network"
+  for_each = { for network in var.networks : network.name => network }
+  
+  name = each.value.name
+  project_id = module.google_project[each.value.host_project_identifier].project_id
+  parent_folder_name = module.google_folder[each.value.parent_folder_name].folder_name
+  auto_create_subnets = try(each.value.auto_create_subnets, false)
+  routing_mode = try(each.value.routing_mode, "REGIONAL")
+  delete_default_routes_on_create = try(each.value.delete_default_routes_on_create, true)
+
+  depends_on = [google_organization_iam_member.enable_xpn_host]
 }

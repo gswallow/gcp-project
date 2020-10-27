@@ -2,12 +2,15 @@ data "google_folder" "folder" {
   folder = var.folder_name
 }
 
+resource "random_id" "project" {
+  byte_length=4
+}
+
 resource "google_project" "project" {
-  name            = replace("${var.org_name}-${var.project_name}", ".", "-")
-  project_id      = replace("${var.org_name}-${var.project_name}", ".", "-")
+  name            = "${var.project_name}-${random_id.project.dec}"
+  project_id      = "${var.project_name}-${random_id.project.dec}"
   folder_id       = data.google_folder.folder.id
   billing_account = var.billing_account_id
-  #labels          = merge(local.labels, { "FolderName" = data.google_folder.folder.name, "ProjectName" = var.project_name })
 }
 
 resource "google_project_service" "enabled_apis" {

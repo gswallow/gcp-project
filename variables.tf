@@ -50,31 +50,75 @@ variable "folders" {
 
 variable "projects" {
   description = "A list of objects including folder names, projects, and IAM principals"
-  type        = list(object({ folder_name = string, project_name = string, project_users = list(string), enabled_apis = list(string) }))
+  type        = list(object({ folder_name = string, project_name = string, identifier = string, project_users = list(string), enabled_apis = list(string) }))
   default = [
     {
       folder_name   = "non-prod",
+      project_name  = "ops",
+      identifier    = "non-prod-ops",
+      project_users = ["greg@theoperatorisdrunk.com"],
+      enabled_apis  = []
+    },
+    {
+      folder_name   = "non-prod",
       project_name  = "dev",
+      identifier    = "non-prod-dev",
       project_users = ["greg@theoperatorisdrunk.com"],
       enabled_apis  = []
     },
     {
       folder_name   = "non-prod",
       project_name  = "qa",
+      identifier    = "non-prod-qa",
       project_users = ["greg@theoperatorisdrunk.com"],
       enabled_apis  = []
     },
     {
       folder_name   = "non-prod",
       project_name  = "uat",
+      identifier    = "non-prod-uat",
+      project_users = ["greg@theoperatorisdrunk.com"],
+      enabled_apis  = []
+    },
+    {
+      folder_name   = "prod",
+      project_name  = "ops",
+      identifier    = "prod-ops",
       project_users = ["greg@theoperatorisdrunk.com"],
       enabled_apis  = []
     },
     {
       folder_name   = "prod",
       project_name  = "prod",
+      identifier    = "prod-prod",
       project_users = ["greg@theoperatorisdrunk.com"],
       enabled_apis  = []
+    }
+  ]
+}
+
+variable "networks" {
+  description = "A list of shared VPC networks to create"
+  type = list(object({name = string, host_project_identifier = string, parent_folder_name = string, auto_create_networks = bool, routing_mode = string, delete_default_routes_on_create = string, cidr_block = string}))
+  default = [
+    {
+      name = "non-prod",
+      host_project_identifier = "non-prod-ops",
+      parent_folder_name = "non-prod",
+      auto_create_networks = false,
+      routing_mode = "REGIONAL",
+      delete_default_routes_on_create = true
+      cidr_block = "10.240.0.0/16"
+    },
+    {
+      name = "prod",
+      host_project_identifier = "prod-ops",
+      parent_folder_name = "prod",
+      host_project = "ops",
+      auto_create_networks = false,
+      routing_mode = "REGIONAL",
+      delete_default_routes_on_create = true
+      cidr_block = "10.248.0.0/16"
     }
   ]
 }
