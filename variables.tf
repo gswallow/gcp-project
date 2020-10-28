@@ -28,21 +28,22 @@ variable "folders" {
     {
       name = "non-prod",
       editors = [
-        "user:noah@gregonaws.net",
-        "user:nami@gregonaws.net"
+        "user:devops1@gregongcp.net",
+        "user:devops2@gregongcp.net"
       ],
       viewers = [
-        "user:madeline@gregonaws.net"
+        "user:support@gregongcp.net"
       ]
     },
     {
       name = "prod",
       editors = [
+        "user:sre@gregongcp.net"
       ],
       viewers = [
-        "user:noah@gregonaws.net",
-        "user:nami@gregonaws.net",
-        "user:madeline@gregonaws.net"
+        "user:devops1@gregongcp.net",
+        "user:devops2@gregongcp.net",
+        "user:support@gregongcp.net"
       ]
     }
   ]
@@ -56,7 +57,7 @@ variable "projects" {
       folder_name         = "non-prod",
       project_name        = "ops",
       identifier          = "non-prod-ops",
-      project_users       = ["greg@gregonaws.net"],
+      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
       auto_create_network = false
     },
@@ -64,7 +65,7 @@ variable "projects" {
       folder_name         = "non-prod",
       project_name        = "dev",
       identifier          = "non-prod-dev",
-      project_users       = ["greg@gregonaws.net"],
+      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
       auto_create_network = false
     },
@@ -72,7 +73,7 @@ variable "projects" {
       folder_name         = "non-prod",
       project_name        = "qa",
       identifier          = "non-prod-qa",
-      project_users       = ["greg@gregonaws.net"],
+      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
       auto_create_network = false
     },
@@ -80,7 +81,7 @@ variable "projects" {
       folder_name         = "non-prod",
       project_name        = "uat",
       identifier          = "non-prod-uat",
-      project_users       = ["greg@gregonaws.net"],
+      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
       auto_create_network = false
     },
@@ -88,7 +89,7 @@ variable "projects" {
       folder_name         = "prod",
       project_name        = "ops",
       identifier          = "prod-ops",
-      project_users       = ["greg@gregonaws.net"],
+      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
       auto_create_network = false
     },
@@ -96,7 +97,7 @@ variable "projects" {
       folder_name         = "prod",
       project_name        = "prod",
       identifier          = "prod-prod",
-      project_users       = ["greg@gregonaws.net"],
+      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
       auto_create_network = false
     }
