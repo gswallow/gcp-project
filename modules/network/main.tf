@@ -1,6 +1,5 @@
 locals {
-  service_projects = tolist(setsubtract(toset(data.google_projects.projects_in_folder.projects[*].project_id), toset([data.google_project.project.project_id])))
-  new_bits         = "${var.subnet_cidr_suffix - tonumber(trimprefix(regex("/[0-9]+$", var.cidr_block), "/"))}"
+  new_bits = var.subnet_cidr_suffix - tonumber(trimprefix(regex("/[0-9]+$", var.cidr_block), "/"))
 }
 
 data "google_project" "project" {
@@ -29,9 +28,9 @@ resource "google_compute_shared_vpc_host_project" "host" {
 }
 
 resource "google_compute_shared_vpc_service_project" "service" {
-  count           = length(local.service_projects)
+  count           = var.number_of_service_projects
   host_project    = google_compute_shared_vpc_host_project.host.project
-  service_project = element(local.service_projects, count.index)
+  service_project = element(tolist(setsubtract(toset(data.google_projects.projects_in_folder.projects[*].project_id), toset([data.google_project.project.project_id]))), count.index)
 }
 
 resource "google_compute_subnetwork" "subnetwork" {

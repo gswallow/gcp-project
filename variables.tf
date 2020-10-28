@@ -123,7 +123,6 @@ variable "networks" {
       name                            = "prod",
       host_project_identifier         = "prod-ops",
       parent_folder_name              = "prod",
-      host_project                    = "ops",
       auto_create_networks            = false,
       routing_mode                    = "REGIONAL",
       delete_default_routes_on_create = true,

@@ -13,6 +13,11 @@ variable "parent_folder_name" {
   type        = string
 }
 
+variable "number_of_service_projects" {
+  description = "The number of service projects that will be linked to the shared VPC"
+  type        = number
+}
+
 variable "auto_create_subnets" {
   description = "Whether to automatically create subnets"
   type        = bool
