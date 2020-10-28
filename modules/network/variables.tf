@@ -30,3 +30,21 @@ variable "delete_default_routes_on_create" {
   type        = bool
   default     = true
 }
+
+variable "gcp_regions" {
+  description = "The regions that will host a subnet in the VPC"
+  type        = list(string)
+  default     = [ "us-central1", "us-east1", "us-east4", "us-west1", "us-west2", "us-west3", "us-west4" ]
+}
+
+variable "cidr_block" {
+  description = "The CIDR block of the VPC network to create"
+  type        = string
+  default     = "10.100.0.0/16"
+}
+
+variable "subnet_cidr_suffix" {
+  description = "The CIDR suffix of each subnet in the VPC (e.g. /20)"
+  type        = number
+  default     = 20
+}

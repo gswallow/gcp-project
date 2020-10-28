@@ -99,7 +99,7 @@ variable "projects" {
 
 variable "networks" {
   description = "A list of shared VPC networks to create"
-  type = list(object({name = string, host_project_identifier = string, parent_folder_name = string, auto_create_networks = bool, routing_mode = string, delete_default_routes_on_create = string, cidr_block = string}))
+  type = list(object({name = string, host_project_identifier = string, parent_folder_name = string, auto_create_networks = bool, routing_mode = string, delete_default_routes_on_create = string, cidr_block = string, gcp_regions = list(string), subnet_cidr_suffix = number}))
   default = [
     {
       name = "non-prod",
@@ -107,8 +107,10 @@ variable "networks" {
       parent_folder_name = "non-prod",
       auto_create_networks = false,
       routing_mode = "REGIONAL",
-      delete_default_routes_on_create = true
-      cidr_block = "10.240.0.0/16"
+      delete_default_routes_on_create = true,
+      cidr_block = "10.240.0.0/16",
+      gcp_regions = [ "us-central1", "us-east1", "us-east4", "us-west1", "us-west2", "us-west3", "us-west4" ],
+      subnet_cidr_suffix = 20
     },
     {
       name = "prod",
@@ -117,8 +119,10 @@ variable "networks" {
       host_project = "ops",
       auto_create_networks = false,
       routing_mode = "REGIONAL",
-      delete_default_routes_on_create = true
-      cidr_block = "10.248.0.0/16"
+      delete_default_routes_on_create = true,
+      cidr_block = "10.248.0.0/16",
+      gcp_regions = [ "us-central1", "us-east1", "us-east4", "us-west1", "us-west2", "us-west3", "us-west4" ],
+      subnet_cidr_suffix = 20
     }
   ]
 }

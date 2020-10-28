@@ -72,6 +72,9 @@ module "google_network" {
   auto_create_subnets = try(each.value.auto_create_subnets, false)
   routing_mode = try(each.value.routing_mode, "REGIONAL")
   delete_default_routes_on_create = try(each.value.delete_default_routes_on_create, true)
+  cidr_block = try(each.value.cidr_block, "10.100.0.0/16")
+  gcp_regions = try(each.value.gcp_regions, [ "us-central1", "us-east1", "us-west1" ])
+  subnet_cidr_suffix = try(each.value.subnet_cidr_suffix, 20)
 
   depends_on = [google_organization_iam_member.enable_xpn_host]
 }
