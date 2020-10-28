@@ -10,12 +10,12 @@ resource "google_folder_iam_policy" "folder" {
 
 data "google_iam_policy" "folder" {
   binding {
-    role = "roles/editor"
+    role    = "roles/editor"
     members = var.folder_editors
   }
 
   binding {
-    role = "roles/viewer"
+    role    = "roles/viewer"
     members = var.folder_viewers
   }
 }

@@ -30,6 +30,12 @@ variable "enabled_apis" {
   default     = []
 }
 
+variable "auto_create_network" {
+  description = "Create a default network for the project"
+  type        = bool
+  default     = false
+}
+
 variable "default_enabled_apis" {
   description = "A default set of APIs to enable"
   type        = list(string)

@@ -3,14 +3,15 @@ data "google_folder" "folder" {
 }
 
 resource "random_id" "project" {
-  byte_length=4
+  byte_length = 4
 }
 
 resource "google_project" "project" {
-  name            = "${var.project_name}-${random_id.project.dec}"
-  project_id      = "${var.project_name}-${random_id.project.dec}"
-  folder_id       = data.google_folder.folder.id
-  billing_account = var.billing_account_id
+  name                = "${var.project_name}-${random_id.project.dec}"
+  project_id          = "${var.project_name}-${random_id.project.dec}"
+  folder_id           = data.google_folder.folder.id
+  billing_account     = var.billing_account_id
+  auto_create_network = var.auto_create_network
 }
 
 resource "google_project_service" "enabled_apis" {

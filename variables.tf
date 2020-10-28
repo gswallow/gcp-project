@@ -24,15 +24,15 @@ variable "budget_amount" {
 variable "folders" {
   description = "A list of folders to create"
   type        = list(object({ name = string, editors = list(string), viewers = list(string) }))
-  default     = [
+  default = [
     {
       name = "non-prod",
       editors = [
-        "user:noah@theoperatorisdrunk.com",
-        "user:nami@theoperatorisdrunk.com"
+        "user:noah@gregonaws.net",
+        "user:nami@gregonaws.net"
       ],
       viewers = [
-        "user:madeline@theoperatorisdrunk.com"
+        "user:madeline@gregonaws.net"
       ]
     },
     {
@@ -40,9 +40,9 @@ variable "folders" {
       editors = [
       ],
       viewers = [
-        "user:noah@theoperatorisdrunk.com",
-        "user:nami@theoperatorisdrunk.com",
-        "user:madeline@theoperatorisdrunk.com"
+        "user:noah@gregonaws.net",
+        "user:nami@gregonaws.net",
+        "user:madeline@gregonaws.net"
       ]
     }
   ]
@@ -50,79 +50,85 @@ variable "folders" {
 
 variable "projects" {
   description = "A list of objects including folder names, projects, and IAM principals"
-  type        = list(object({ folder_name = string, project_name = string, identifier = string, project_users = list(string), enabled_apis = list(string) }))
+  type        = list(object({ folder_name = string, project_name = string, identifier = string, project_users = list(string), enabled_apis = list(string), auto_create_network = bool }))
   default = [
     {
-      folder_name   = "non-prod",
-      project_name  = "ops",
-      identifier    = "non-prod-ops",
-      project_users = ["greg@theoperatorisdrunk.com"],
-      enabled_apis  = []
+      folder_name         = "non-prod",
+      project_name        = "ops",
+      identifier          = "non-prod-ops",
+      project_users       = ["greg@gregonaws.net"],
+      enabled_apis        = [],
+      auto_create_network = false
     },
     {
-      folder_name   = "non-prod",
-      project_name  = "dev",
-      identifier    = "non-prod-dev",
-      project_users = ["greg@theoperatorisdrunk.com"],
-      enabled_apis  = []
+      folder_name         = "non-prod",
+      project_name        = "dev",
+      identifier          = "non-prod-dev",
+      project_users       = ["greg@gregonaws.net"],
+      enabled_apis        = [],
+      auto_create_network = false
     },
     {
-      folder_name   = "non-prod",
-      project_name  = "qa",
-      identifier    = "non-prod-qa",
-      project_users = ["greg@theoperatorisdrunk.com"],
-      enabled_apis  = []
+      folder_name         = "non-prod",
+      project_name        = "qa",
+      identifier          = "non-prod-qa",
+      project_users       = ["greg@gregonaws.net"],
+      enabled_apis        = [],
+      auto_create_network = false
     },
     {
-      folder_name   = "non-prod",
-      project_name  = "uat",
-      identifier    = "non-prod-uat",
-      project_users = ["greg@theoperatorisdrunk.com"],
-      enabled_apis  = []
+      folder_name         = "non-prod",
+      project_name        = "uat",
+      identifier          = "non-prod-uat",
+      project_users       = ["greg@gregonaws.net"],
+      enabled_apis        = [],
+      auto_create_network = false
     },
     {
-      folder_name   = "prod",
-      project_name  = "ops",
-      identifier    = "prod-ops",
-      project_users = ["greg@theoperatorisdrunk.com"],
-      enabled_apis  = []
+      folder_name         = "prod",
+      project_name        = "ops",
+      identifier          = "prod-ops",
+      project_users       = ["greg@gregonaws.net"],
+      enabled_apis        = [],
+      auto_create_network = false
     },
     {
-      folder_name   = "prod",
-      project_name  = "prod",
-      identifier    = "prod-prod",
-      project_users = ["greg@theoperatorisdrunk.com"],
-      enabled_apis  = []
+      folder_name         = "prod",
+      project_name        = "prod",
+      identifier          = "prod-prod",
+      project_users       = ["greg@gregonaws.net"],
+      enabled_apis        = [],
+      auto_create_network = false
     }
   ]
 }
 
 variable "networks" {
   description = "A list of shared VPC networks to create"
-  type = list(object({name = string, host_project_identifier = string, parent_folder_name = string, auto_create_networks = bool, routing_mode = string, delete_default_routes_on_create = string, cidr_block = string, gcp_regions = list(string), subnet_cidr_suffix = number}))
+  type        = list(object({ name = string, host_project_identifier = string, parent_folder_name = string, auto_create_networks = bool, routing_mode = string, delete_default_routes_on_create = string, cidr_block = string, gcp_regions = list(string), subnet_cidr_suffix = number }))
   default = [
     {
-      name = "non-prod",
-      host_project_identifier = "non-prod-ops",
-      parent_folder_name = "non-prod",
-      auto_create_networks = false,
-      routing_mode = "REGIONAL",
+      name                            = "non-prod",
+      host_project_identifier         = "non-prod-ops",
+      parent_folder_name              = "non-prod",
+      auto_create_networks            = false,
+      routing_mode                    = "REGIONAL",
       delete_default_routes_on_create = true,
-      cidr_block = "10.240.0.0/16",
-      gcp_regions = [ "us-central1", "us-east1", "us-east4", "us-west1", "us-west2", "us-west3", "us-west4" ],
-      subnet_cidr_suffix = 20
+      cidr_block                      = "10.240.0.0/16",
+      gcp_regions                     = ["us-central1", "us-east1", "us-east4", "us-west1", "us-west2", "us-west3", "us-west4"],
+      subnet_cidr_suffix              = 20
     },
     {
-      name = "prod",
-      host_project_identifier = "prod-ops",
-      parent_folder_name = "prod",
-      host_project = "ops",
-      auto_create_networks = false,
-      routing_mode = "REGIONAL",
+      name                            = "prod",
+      host_project_identifier         = "prod-ops",
+      parent_folder_name              = "prod",
+      host_project                    = "ops",
+      auto_create_networks            = false,
+      routing_mode                    = "REGIONAL",
       delete_default_routes_on_create = true,
-      cidr_block = "10.248.0.0/16",
-      gcp_regions = [ "us-central1", "us-east1", "us-east4", "us-west1", "us-west2", "us-west3", "us-west4" ],
-      subnet_cidr_suffix = 20
+      cidr_block                      = "10.248.0.0/16",
+      gcp_regions                     = ["us-central1", "us-east1", "us-east4", "us-west1", "us-west2", "us-west3", "us-west4"],
+      subnet_cidr_suffix              = 20
     }
   ]
 }

@@ -30,6 +30,6 @@ output "client_openid_userinfo" {
   value = data.google_client_openid_userinfo.client.email
 }
 
-output "vpc_service_projects" { 
+output "vpc_service_projects" {
   value = module.google_network["non-prod"].service_projects
 }
