@@ -2,6 +2,8 @@
 # Create a storage bucket
 # - enable versioning
 # Create a new service account for the project
+# - Give it a list of predefined roles that do not allow it to
+#   create service account keys.
 # - Give it access to the shared VPC if it exists.
 
 # DONEs
@@ -10,6 +12,7 @@
 # - Attach the project to a shared VPC if it exists
 
 # Roles for the Application Default service account
+
 resource "google_organization_iam_member" "folder_admin" {
   org_id = data.google_organization.org.org_id
   role   = "roles/resourcemanager.folderAdmin"

@@ -20,3 +20,10 @@ resource "google_project_service" "enabled_apis" {
   service                    = element(local.enabled_apis, count.index)
   disable_dependent_services = true
 }
+
+resource "google_service_account" "terraform" {
+  account_id = "terraform"
+  display_name = "terraform"
+  description = "Terraform Infrastructure Provisioner"
+  project = google_project.project.id
+}
