@@ -23,26 +23,21 @@ variable "budget_amount" {
 
 variable "folders" {
   description = "A list of folders to create"
-  type        = list(object({ name = string, editors = list(string), viewers = list(string) }))
+  type        = list(object({ name = string, viewers = list(string) }))
   default = [
     {
       name = "non-prod",
-      editors = [
-        "user:devops1@gregongcp.net",
-        "user:devops2@gregongcp.net"
-      ],
       viewers = [
+        "user:devopsgal@gregongcp.net",
+        "user:devopsguy@gregongcp.net",
+        "user:sre@gregongcp.net",
         "user:support@gregongcp.net"
       ]
     },
     {
       name = "prod",
-      editors = [
-        "user:sre@gregongcp.net"
-      ],
       viewers = [
-        "user:devops1@gregongcp.net",
-        "user:devops2@gregongcp.net",
+        "user:sre@gregongcp.net",
         "user:support@gregongcp.net"
       ]
     }
@@ -51,55 +46,82 @@ variable "folders" {
 
 variable "projects" {
   description = "A list of objects including folder names, projects, and IAM principals"
-  type        = list(object({ folder_name = string, project_name = string, identifier = string, project_users = list(string), enabled_apis = list(string), auto_create_network = bool }))
+  type        = list(object({ folder_name = string, project_name = string, identifier = string, enabled_apis = list(string), auto_create_network = bool, role_bindings = list(string), terraform_impersonators = list(string) }))
   default = [
     {
       folder_name         = "non-prod",
       project_name        = "ops",
       identifier          = "non-prod-ops",
-      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
-      auto_create_network = false
+      auto_create_network = false,
+      role_bindings       = []
+      terraform_impersonators = [
+        "user:admin@gregongcp.net",
+        "user:devopsgal@gregongcp.net",
+        "user:devopsguy@gregongcp.net"
+      ]
     },
     {
       folder_name         = "non-prod",
       project_name        = "dev",
       identifier          = "non-prod-dev",
-      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
-      auto_create_network = false
+      auto_create_network = false,
+      role_bindings       = []
+      terraform_impersonators = [
+        "user:admin@gregongcp.net",
+        "user:devopsgal@gregongcp.net",
+        "user:devopsguy@gregongcp.net"
+      ]
     },
     {
       folder_name         = "non-prod",
       project_name        = "qa",
       identifier          = "non-prod-qa",
-      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
-      auto_create_network = false
+      auto_create_network = false,
+      role_bindings       = []
+      terraform_impersonators = [
+        "user:admin@gregongcp.net",
+        "user:devopsgal@gregongcp.net",
+        "user:devopsguy@gregongcp.net"
+      ]
     },
-    {
-      folder_name         = "non-prod",
+    { folder_name         = "non-prod",
       project_name        = "uat",
       identifier          = "non-prod-uat",
-      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
-      auto_create_network = false
+      auto_create_network = false,
+      role_bindings       = []
+      terraform_impersonators = [
+        "user:admin@gregongcp.net",
+        "user:devopsgal@gregongcp.net",
+        "user:devopsguy@gregongcp.net"
+      ]
     },
     {
       folder_name         = "prod",
       project_name        = "ops",
       identifier          = "prod-ops",
-      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
-      auto_create_network = false
+      auto_create_network = false,
+      role_bindings       = []
+      terraform_impersonators = [
+        "user:sre@gregongcp.net",
+        "user:admin@gregongcp.net"
+      ]
     },
     {
       folder_name         = "prod",
       project_name        = "prod",
       identifier          = "prod-prod",
-      project_users       = ["admin@gregongcp.net"],
       enabled_apis        = [],
-      auto_create_network = false
+      auto_create_network = false,
+      role_bindings       = []
+      terraform_impersonators = [
+        "user:sre@gregongcp.net",
+        "user:admin@gregongcp.net"
+      ]
     }
   ]
 }
@@ -133,32 +155,6 @@ variable "networks" {
   ]
 }
 
-variable "default_enabled_apis" {
-  description = "The default list of APIs to enable for each project"
-  type        = list(string)
-  default = [
-    "compute.googleapis.com",
-    "replicapool.googleapis.com",
-    "replicapoolupdater.googleapis.com",
-    "resourceviews.googleapis.com",
-    "storage-component.googleapis.com",
-    "storagetransfer.googleapis.com",
-    "servicenetworking.googleapis.com",
-    "firewallinsights.googleapis.com",
-    "domains.googleapis.com",
-    "dns.googleapis.com",
-    "logging.googleapis.com",
-    "monitoring.googleapis.com",
-    "cloudtrace.googleapis.com",
-    "clouderrorreporting.googleapis.com",
-    "container.googleapis.com",
-    "containerregistry.googleapis.com",
-    "containerscanning.googleapis.com",
-    "containerthreatdetection.googleapis.com",
-    "sql-component.googleapis.com"
-  ]
-}
-
 variable "labels" {
   description = "Extra tags to apply to created resources"
   type        = map(string)
@@ -166,8 +162,10 @@ variable "labels" {
 }
 
 locals {
-  labels = merge({
-    OrganizationId = var.org_domain
-    BillingAccount = var.billing_account_id
-  }, var.labels)
-}
+  labels = merge(
+    {
+      OrganizationId = var.org_domain 
+      BillingAccount = var.billing_account_id 
+    },
+    var.labels)
+  }

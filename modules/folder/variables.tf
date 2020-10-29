@@ -3,12 +3,6 @@ variable "folder_name" {
   type        = string
 }
 
-variable "folder_editors" {
-  description = "A list of folder editors (administrators)"
-  type        = list(string)
-  default     = []
-}
-
 variable "folder_viewers" {
   description = "A list of folder viewers (read-only accounts)"
   type        = list(string)

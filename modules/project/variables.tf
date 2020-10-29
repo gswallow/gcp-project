@@ -18,12 +18,6 @@ variable "project_name" {
   type        = string
 }
 
-variable "project_users" {
-  description = "List of users to add to the project"
-  type        = list(string)
-  default     = []
-}
-
 variable "enabled_apis" {
   description = "List of APIs to enable for the project"
   type        = list(string)
@@ -34,6 +28,39 @@ variable "auto_create_network" {
   description = "Create a default network for the project"
   type        = bool
   default     = false
+}
+
+variable "role_bindings" {
+  description = "A list of roles to bind the IAM policy for the project's service account"
+  type        = list(string)
+  default     = []
+}
+
+variable "default_role_bindings" {
+  description = "The default list of roles to bind to the project service account"
+  type        = list(string)
+  default = [
+    "roles/apigateway.admin",
+    "roles/browser",
+    "roles/cloudfunctions.admin",
+    "roles/cloudkms.admin",
+    "roles/cloudsql.admin",
+    "roles/compute.admin",
+    "roles/container.admin",
+    "roles/containeranalysis.admin",
+    "roles/datastore.owner",
+    "roles/dns.admin",
+    "roles/iam.roleAdmin",
+    "roles/iam.securityReviewer",
+    "roles/logging.admin",
+    "roles/monitoring.admin"
+  ]
+}
+
+variable "terraform_impersonators" { 
+  description = "The list of users that impersonate the terraform servie account"
+  type        = list(string)
+  default     = []
 }
 
 variable "default_enabled_apis" {
@@ -70,6 +97,7 @@ variable "labels" {
 
 locals {
   enabled_apis = length(var.enabled_apis) == 0 ? var.default_enabled_apis : var.enabled_apis
+  role_bindings = length(var.role_bindings) == 0 ? var.default_role_bindings : var.role_bindings
   labels = merge({
     OrganizationId = var.org_name
     BillingAccount = var.billing_account_id
