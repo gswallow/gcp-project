@@ -25,5 +25,5 @@ resource "google_service_account" "terraform" {
   account_id = "terraform"
   display_name = "terraform"
   description = "Terraform Infrastructure Provisioner"
-  project = google_project.project.id
+  project = google_project.project.name
 }
