@@ -53,7 +53,8 @@ variable "default_role_bindings" {
     "roles/iam.roleAdmin",
     "roles/iam.securityReviewer",
     "roles/logging.admin",
-    "roles/monitoring.admin"
+    "roles/monitoring.admin",
+    "roles/iap.admin"
   ]
 }
 
