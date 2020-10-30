@@ -42,3 +42,12 @@ resource "google_compute_subnetwork" "subnetwork" {
   network       = google_compute_network.network.id
   ip_cidr_range = cidrsubnet(var.cidr_block, local.new_bits, count.index)
 }
+
+resource "google_compute_route" "default" {
+  name             = "default-route"
+  dest_range       = "0.0.0.0/0"
+  network          = google_compute_network.network.name
+  next_hop_gateway = "default-internet-gateway"
+  priority         = 1000
+  project          = data.google_project.project.project_id
+}
