@@ -90,6 +90,11 @@ variable "default_enabled_apis" {
   ]
 }
 
+variable "bucket_name" {
+  description = "The name of the S3 bucket for terraform states"
+  type = string
+}
+
 variable "labels" {
   description = "Extra tags to apply to created resources"
   type        = map(string)

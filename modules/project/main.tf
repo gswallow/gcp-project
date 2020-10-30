@@ -28,6 +28,7 @@ resource "google_service_account" "terraform" {
   project      = google_project.project.name
 }
 
+# Specify the IAM policy for the terraform service account
 data "google_iam_policy" "terraform" {
   dynamic "binding" {
     for_each = local.role_bindings
@@ -78,3 +79,13 @@ resource "google_service_account_iam_policy" "terraform" {
   policy_data = data.google_iam_policy.terraform_impersonate.policy_data
 }
   
+# Storage bucket for Terraform states
+resource "google_storage_bucket" "terraform" {
+  name     = var.bucket_name
+  location = "US"
+  project  = google_project.project.name
+
+  versioning {
+    enabled = true
+  }
+}
