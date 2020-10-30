@@ -42,14 +42,15 @@ module "google_project" {
   source   = "./modules/project"
   for_each = { for project in var.projects : project.identifier => project }
 
-  billing_account_id  = var.billing_account_id
-  org_name            = var.org_domain
-  folder_name         = module.google_folder[each.value.folder_name].folder_name
-  project_name        = each.value.project_name
-  enabled_apis        = each.value.enabled_apis
-  auto_create_network = each.value.auto_create_network
-  role_bindings       = try(each.value.role_bindings, [])
-  bucket_name         = replace("${var.org_domain}-${each.value.folder_name}-${each.value.project_name}-terraform", ".", "-")
+  billing_account_id      = var.billing_account_id
+  org_name                = var.org_domain
+  folder_name             = module.google_folder[each.value.folder_name].folder_name
+  project_name            = each.value.project_name
+  enabled_apis            = each.value.enabled_apis
+  auto_create_network     = each.value.auto_create_network
+  role_bindings           = try(each.value.role_bindings, [])
+  bucket_name             = replace("${var.org_domain}-${each.value.folder_name}-${each.value.project_name}-terraform", ".", "-")
+  terraform_impersonators = try(each.value.terraform_impersonators, [])
 
   depends_on = [module.google_folder]
 }
