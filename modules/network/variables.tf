@@ -53,3 +53,7 @@ variable "subnet_cidr_suffix" {
   type        = number
   default     = 20
 }
+
+locals {
+  new_bits = var.subnet_cidr_suffix - tonumber(trimprefix(regex("/[0-9]+$", var.cidr_block), "/"))
+}

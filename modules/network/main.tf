@@ -1,7 +1,3 @@
-locals {
-  new_bits = var.subnet_cidr_suffix - tonumber(trimprefix(regex("/[0-9]+$", var.cidr_block), "/"))
-}
-
 data "google_project" "project" {
   project_id = var.project_id
 }
