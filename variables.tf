@@ -164,8 +164,8 @@ variable "labels" {
 locals {
   labels = merge(
     {
-      OrganizationId = var.org_domain 
-      BillingAccount = var.billing_account_id 
+      OrganizationId = var.org_domain
+      BillingAccount = var.billing_account_id
     },
-    var.labels)
-  }
+  var.labels)
+}
