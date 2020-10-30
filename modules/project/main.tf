@@ -61,22 +61,10 @@ resource "google_project_iam_policy" "terraform" {
   policy_data = data.google_iam_policy.terraform.policy_data
 }
 
-# Specify the users that can impersonate the terraform service account
-data "google_iam_policy" "terraform_impersonate" {
-  binding {
-    role = "roles/iam.serviceAccountTokenCreator"
-    members = var.terraform_impersonators
-  }
-
-  binding {
-    role = "roles/iam.serviceAccountUser"
-    members = var.terraform_impersonators
-  }
-}
-
-resource "google_service_account_iam_policy" "terraform" {
-  service_account_id = google_service_account.terraform.name
-  policy_data = data.google_iam_policy.terraform_impersonate.policy_data
+resource "google_service_account_iam_binding" "terraform_impersonate" {
+  service_account_id = google_service_account.terraform.id
+  role = "roles/iam.serviceAccountTokenCreator"
+  members = var.terraform_impersonators
 }
   
 # Storage bucket for Terraform states
