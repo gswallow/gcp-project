@@ -34,7 +34,7 @@ module "google_folder" {
 
   parent_org_id  = data.google_organization.org.name
   folder_name    = each.value.name
-  folder_viewers = each.value.viewers
+  folder_viewers = try(each.value.viewers, [])
   depends_on     = [google_organization_iam_member.folder_admin, google_organization_iam_member.project_creator]
 }
 
@@ -46,7 +46,7 @@ module "google_project" {
   org_name                = var.org_domain
   folder_name             = module.google_folder[each.value.folder_name].folder_name
   project_name            = each.value.project_name
-  enabled_apis            = each.value.enabled_apis
+  enabled_apis            = try(each.value.enabled_apis, [])
   auto_create_network     = each.value.auto_create_network
   role_bindings           = try(each.value.role_bindings, [])
   bucket_name             = replace("${var.org_domain}-${each.value.folder_name}-${each.value.project_name}-terraform", ".", "-")

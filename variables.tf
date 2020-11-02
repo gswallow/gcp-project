@@ -7,18 +7,12 @@ variable "gcp_region" {
 variable "org_domain" {
   description = "The organization in charge of created resources"
   type        = string
-  default     = "Group1001"
+  default     = "gregongcp.net"
 }
 
 variable "billing_account_id" {
   description = "The ID of the billing account with which to associate this project"
   type        = string
-}
-
-variable "budget_amount" {
-  description = "The amount of money to use for a budget alert"
-  type        = number
-  default     = 10
 }
 
 variable "folders" {
@@ -128,13 +122,13 @@ variable "projects" {
 
 variable "networks" {
   description = "A list of shared VPC networks to create"
-  type        = list(object({ name = string, host_project_identifier = string, parent_folder_name = string, auto_create_networks = bool, routing_mode = string, delete_default_routes_on_create = string, cidr_block = string, gcp_regions = list(string), subnet_cidr_suffix = number }))
+  type        = list(object({ name = string, host_project_identifier = string, parent_folder_name = string, auto_create_subnets = bool, routing_mode = string, delete_default_routes_on_create = string, cidr_block = string, gcp_regions = list(string), subnet_cidr_suffix = number }))
   default = [
     {
       name                            = "non-prod",
       host_project_identifier         = "non-prod-ops",
       parent_folder_name              = "non-prod",
-      auto_create_networks            = false,
+      auto_create_subnets             = false,
       routing_mode                    = "REGIONAL",
       delete_default_routes_on_create = true,
       cidr_block                      = "10.240.0.0/16",
@@ -145,7 +139,7 @@ variable "networks" {
       name                            = "prod",
       host_project_identifier         = "prod-ops",
       parent_folder_name              = "prod",
-      auto_create_networks            = false,
+      auto_create_subnets             = false,
       routing_mode                    = "REGIONAL",
       delete_default_routes_on_create = true,
       cidr_block                      = "10.248.0.0/16",
