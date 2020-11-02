@@ -28,6 +28,12 @@ backend, for Terraform.
 
 ## Usage
 
+Requirements:
+
+- Terraform 0.13 or newer, due to use of for_each in module declarations
+- A Google organization, either tied to Google Cloud Identity services
+or GSuite.
+
 First, you will need to know your billing account ID and be logged in as an
 organization administrator.  Given a new organization, run: 
 
