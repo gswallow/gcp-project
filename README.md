@@ -26,6 +26,17 @@ Finally, each folder will contain a Google Storage bucket, with versioning
 enabled, that is intended to be used as the storage bucket for the GCP storage
 backend, for Terraform.
 
+## Impersonating terraform service accounts
+
+The `example` folder contains an example terraform state that simply creates a
+Google Cloud Storage bucket.  Note, however, that it initializes two instances
+of the [GCP provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs): 
+one for the application default credentials, and another to use a token
+generated for the terraform service account within a project.
+
+See https://medium.com/google-cloud/a-hitchhikers-guide-to-gcp-service-account-impersonation-in-terraform-af98853ebd37
+for an overview of the concept.
+
 ## Usage
 
 Requirements:
@@ -67,7 +78,7 @@ repository.
 | projects                                 | A list of projects to create                                          | list of objects | examples                        | yes       |
 | projects/folder_name                     | The folder in which to place the project being created                | string          | examples                        | yes       |
 | projects/project_name                    | The name of the project to create                                     | string          | examples                        | yes       |
-| projects/identifier                      | An internal identifier for terraform.  Must be unique.                | string          | exapmles                        | yes       |
+| projects/identifier                      | An internal identifier for terraform.  Must be unique.                | string          | examples                        | yes       |
 | projects/enabled_apis                    | A list of APIs to enable for the project                              | list of strings | []                              | no        |
 | projects/auto_create_network             | Automatically create a network for the project                        | bool            | false                           | no        |
 | projects/role_bindings                   | A list of IAM role bindings attached to the terraform service account | list of strings | []                              | no        |
