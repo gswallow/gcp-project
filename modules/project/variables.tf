@@ -59,7 +59,7 @@ variable "default_role_bindings" {
   ]
 }
 
-variable "terraform_impersonators" { 
+variable "terraform_impersonators" {
   description = "The list of users that impersonate the terraform servie account"
   type        = list(string)
   default     = []
@@ -87,13 +87,14 @@ variable "default_enabled_apis" {
     "containerregistry.googleapis.com",
     "containerscanning.googleapis.com",
     "containerthreatdetection.googleapis.com",
-    "sql-component.googleapis.com"
+    "sql-component.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
   ]
 }
 
 variable "bucket_name" {
   description = "The name of the S3 bucket for terraform states"
-  type = string
+  type        = string
 }
 
 variable "labels" {
@@ -103,7 +104,7 @@ variable "labels" {
 }
 
 locals {
-  enabled_apis = length(var.enabled_apis) == 0 ? var.default_enabled_apis : var.enabled_apis
+  enabled_apis  = length(var.enabled_apis) == 0 ? var.default_enabled_apis : var.enabled_apis
   role_bindings = length(var.role_bindings) == 0 ? var.default_role_bindings : var.role_bindings
   labels = merge({
     OrganizationId = var.org_name

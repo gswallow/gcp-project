@@ -57,16 +57,16 @@ data "google_iam_policy" "terraform" {
 }
 
 resource "google_project_iam_policy" "terraform" {
-  project = google_project.project.name
+  project     = google_project.project.name
   policy_data = data.google_iam_policy.terraform.policy_data
 }
 
 resource "google_service_account_iam_binding" "terraform_impersonate" {
   service_account_id = google_service_account.terraform.id
-  role = "roles/iam.serviceAccountTokenCreator"
-  members = var.terraform_impersonators
+  role               = "roles/iam.serviceAccountTokenCreator"
+  members            = var.terraform_impersonators
 }
-  
+
 # Storage bucket for Terraform states
 resource "google_storage_bucket" "terraform" {
   name     = var.bucket_name

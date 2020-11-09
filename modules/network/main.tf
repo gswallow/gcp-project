@@ -29,6 +29,13 @@ resource "google_compute_shared_vpc_service_project" "service" {
   service_project = element(tolist(setsubtract(toset(data.google_projects.projects_in_folder.projects[*].project_id), toset([data.google_project.project.project_id]))), count.index)
 }
 
+resource "google_project_iam_binding" "network_user" {
+  project = google_compute_shared_vpc_host_project.host.project
+  role    = "roles/compute.networkUser"
+
+  members = [for account in var.service_project_service_accounts : "serviceAccount:${account}"]
+}
+
 resource "google_compute_subnetwork" "subnetwork" {
   count = length(var.gcp_regions)
 

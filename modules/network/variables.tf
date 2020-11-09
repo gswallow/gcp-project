@@ -54,6 +54,12 @@ variable "subnet_cidr_suffix" {
   default     = 20
 }
 
+variable "service_project_service_accounts" {
+  description = "The list of service accounts to grant compute.networkUser to"
+  type        = list(string)
+  default     = []
+}
+
 locals {
   new_bits = var.subnet_cidr_suffix - tonumber(trimprefix(regex("/[0-9]+$", var.cidr_block), "/"))
 }

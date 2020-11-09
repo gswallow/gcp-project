@@ -29,3 +29,8 @@ output "client_config_zone" {
 output "client_openid_userinfo" {
   value = data.google_client_openid_userinfo.client.email
 }
+
+output "terraform_service_accounts" {
+  value = { for account in module.google_project : account.service_account => account }
+}
+
