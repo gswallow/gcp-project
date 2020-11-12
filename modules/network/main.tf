@@ -29,11 +29,11 @@ resource "google_compute_shared_vpc_service_project" "service" {
   service_project = element(tolist(setsubtract(toset(data.google_projects.projects_in_folder.projects[*].project_id), toset([data.google_project.project.project_id]))), count.index)
 }
 
-resource "google_project_iam_binding" "network_user" {
+resource "google_project_iam_member" "network_user" {
+  count   = var.service_project_service_accounts_count
   project = google_compute_shared_vpc_host_project.host.project
   role    = "roles/compute.networkUser"
-
-  members = [for account in var.service_project_service_accounts : "serviceAccount:${account}"]
+  member  = "serviceAccount:${element(var.service_project_service_accounts, count.index)}"
 }
 
 resource "google_compute_subnetwork" "subnetwork" {

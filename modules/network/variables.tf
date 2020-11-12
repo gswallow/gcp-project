@@ -54,6 +54,12 @@ variable "subnet_cidr_suffix" {
   default     = 20
 }
 
+variable "service_project_service_accounts_count" {
+  description = "The list of service accounts to grant compute.networkUser to"
+  type        = number
+  default     = 0
+}
+
 variable "service_project_service_accounts" {
   description = "The list of service accounts to grant compute.networkUser to"
   type        = list(string)
