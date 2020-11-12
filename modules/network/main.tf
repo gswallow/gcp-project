@@ -44,6 +44,16 @@ resource "google_compute_subnetwork" "subnetwork" {
   project       = data.google_project.project.project_id
   network       = google_compute_network.network.id
   ip_cidr_range = cidrsubnet(var.cidr_block, local.new_bits, count.index)
+
+  secondary_ip_range {
+    range_name    = "gke-pods"
+    ip_cidr_range = cidrsubnet(var.gke_pods_cidr_block, local.gke_pods_new_bits, count.index)
+  }
+
+  secondary_ip_range {
+    range_name    = "gke-services"
+    ip_cidr_range = cidrsubnet(var.gke_services_cidr_block, local.gke_services_new_bits, count.index)
+  }
 }
 
 resource "google_compute_route" "default" {
