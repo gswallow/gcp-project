@@ -94,7 +94,8 @@ variable "default_enabled_apis" {
     "containerscanning.googleapis.com",
     "containerthreatdetection.googleapis.com",
     "sql-component.googleapis.com",
-    "cloudresourcemanager.googleapis.com"
+    "cloudresourcemanager.googleapis.com",
+    "cloudkms.googleapis.com"
   ]
 }
 
