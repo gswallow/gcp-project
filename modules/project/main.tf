@@ -28,37 +28,25 @@ resource "google_service_account" "terraform" {
   project      = google_project.project.name
 }
 
-# Specify the IAM policy for the terraform service account
-data "google_iam_policy" "terraform" {
-  dynamic "binding" {
-    for_each = local.role_bindings
-    content {
-      role = binding.value
-      members = [
-        "serviceAccount:${google_service_account.terraform.email}"
-      ]
-    }
-  }
-
-  audit_config {
-    service = "allServices"
-    audit_log_configs {
-      log_type = "DATA_READ"
-    }
-
-    audit_log_configs {
-      log_type = "DATA_WRITE"
-    }
-
-    audit_log_configs {
-      log_type = "ADMIN_READ"
-    }
-  }
+resource "google_project_iam_member" "terraform" {
+  count       = length(local.role_bindings)
+  role        = element(local.role_bindings, count.index)
+  project     = google_project.project.name
+  member      = "serviceAccount:${google_service_account.terraform.email}"
 }
 
-resource "google_project_iam_policy" "terraform" {
-  project     = google_project.project.name
-  policy_data = data.google_iam_policy.terraform.policy_data
+resource "google_project_iam_audit_config" "project" {
+  project = google_project.project.name
+  service = "allServices"
+  audit_log_config {
+    log_type = "DATA_READ"
+  }
+  audit_log_config {
+    log_type = "DATA_WRITE"
+  }
+  audit_log_config {
+    log_type = "ADMIN_READ"
+  }
 }
 
 resource "google_service_account_iam_binding" "terraform_impersonate" {
@@ -69,7 +57,7 @@ resource "google_service_account_iam_binding" "terraform_impersonate" {
 
 # Storage bucket for Terraform states
 resource "google_storage_bucket" "terraform" {
-  name     = var.bucket_name
+  name     = "${var.bucket_name}-${random_id.project.dec}"
   location = "US"
   project  = google_project.project.name
 

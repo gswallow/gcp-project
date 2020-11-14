@@ -3,9 +3,11 @@ resource "google_folder" "folder" {
   parent       = var.parent_org_id
 }
 
-resource "google_folder_iam_policy" "folder" {
-  folder      = google_folder.folder.name
-  policy_data = data.google_iam_policy.folder.policy_data
+resource "google_folder_iam_member" "viewer" {
+  count = length(var.folder_viewers)
+  folder  = google_folder.folder.name
+  role    = "roles/viewer"
+  member  = element(var.folder_viewers, count.index)
 }
 
 data "google_iam_policy" "folder" {

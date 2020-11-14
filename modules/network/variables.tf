@@ -54,6 +54,36 @@ variable "subnet_cidr_suffix" {
   default     = 20
 }
 
+variable "service_project_service_accounts_count" {
+  description = "The list of service accounts to grant compute.networkUser to"
+  type        = number
+  default     = 0
+}
+
+variable "gke_pods_cidr_block" {
+  description = "A secondary CIDR block for pods on GKE clusters"
+  type        = string
+  default     = "100.64.0.0/11"
+}
+
+variable "gke_pods_cidr_suffix" {
+  description = "The CIDR suffix of each subnet in the VPC (e.g. /20)"
+  type        = number
+  default     = 16
+}
+
+variable "gke_services_cidr_block" {
+  description = "A secondary CIDR block for services on GKE clusters"
+  type        = string
+  default     = "100.96.0.0/11"
+}
+
+variable "gke_services_cidr_suffix" {
+  description = "The CIDR suffix of each subnet in the VPC (e.g. /20)"
+  type        = number
+  default     = 16
+}
+
 variable "service_project_service_accounts" {
   description = "The list of service accounts to grant compute.networkUser to"
   type        = list(string)
@@ -62,4 +92,6 @@ variable "service_project_service_accounts" {
 
 locals {
   new_bits = var.subnet_cidr_suffix - tonumber(trimprefix(regex("/[0-9]+$", var.cidr_block), "/"))
+  gke_pods_new_bits = var.gke_pods_cidr_suffix - tonumber(trimprefix(regex("/[0-9]+$", var.gke_pods_cidr_block), "/"))
+  gke_services_new_bits = var.gke_services_cidr_suffix - tonumber(trimprefix(regex("/[0-9]+$", var.gke_services_cidr_block), "/"))
 }
