@@ -149,6 +149,18 @@ variable "networks" {
   ]
 }
 
+variable "create_nat_routers" {
+  description = "Controls whether Google NAT routers are created"
+  type        = bool
+  default     = false
+}
+
+variable "nat_router_regions" {
+  description = "The list of regions in which NAT routers will be configured (additonal costs apply)"
+  type        = list(string)
+  default     = [ "us-central1" ]
+}
+
 variable "labels" {
   description = "Extra tags to apply to created resources"
   type        = map(string)

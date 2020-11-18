@@ -42,6 +42,18 @@ variable "gcp_regions" {
   default     = ["us-central1", "us-east1", "us-east4", "us-west1", "us-west2", "us-west3", "us-west4"]
 }
 
+variable "create_nat_routers" {
+  description = "Controls whether Google NAT routers are created"
+  type        = bool
+  default     = false
+}
+
+variable "nat_router_regions" {
+  description = "The regions in which NAT routers will be configured"
+  type        = list(string)
+  default     = ["us-central1"]
+}
+
 variable "cidr_block" {
   description = "The CIDR block of the VPC network to create"
   type        = string

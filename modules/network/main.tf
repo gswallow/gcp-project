@@ -11,7 +11,7 @@ data "google_projects" "projects_in_folder" {
 }
 
 data "google_project" "service_project" {
-  count = length(data.google_projects.projects_in_folder.projects)
+  count = var.number_of_service_projects
   project_id = element(data.google_projects.projects_in_folder.projects[*].project_id, count.index)
 }
 
@@ -59,7 +59,7 @@ resource "google_compute_subnetwork" "subnetwork" {
 # Assign Subnet User privileges
 # Needs to be manually re-run a second time if Subnetwork is re-created
 resource "google_project_iam_member" "subnetuser_cloudservices" {
-  provider   = "google-beta"
+  provider   = google-beta
   count      = var.number_of_service_projects
   project    = data.google_project.project.project_id
   role       = "roles/compute.networkUser"
@@ -67,7 +67,7 @@ resource "google_project_iam_member" "subnetuser_cloudservices" {
 }
 
 resource "google_project_iam_member" "subnetuser_gke" {
-  provider   = "google-beta"
+  provider   = google-beta
   count      = var.number_of_service_projects
   project    = data.google_project.project.project_id
   role       = "roles/compute.networkUser"
@@ -90,7 +90,7 @@ resource "google_project_iam_member" "security_terraform" {
 
 # Assign Host Service Agent User privileges to the Service Project's Google APIs Service Agent with IAM
 resource "google_project_iam_member" "hostagentuser_gke" {
-  provider   = "google-beta"
+  provider   = google-beta
   count      = var.number_of_service_projects
   project    = data.google_project.project.project_id
   role       = "roles/container.hostServiceAgentUser"
@@ -99,11 +99,42 @@ resource "google_project_iam_member" "hostagentuser_gke" {
 
 # Assign Key Encrypter Decrypter privileges to the Service Project's Google APIs Service Agent with IAM
 resource "google_project_iam_member" "kms_gke" {
-  provider   = "google-beta"
+  provider   = google-beta
   count      = var.number_of_service_projects
   project    = data.google_project.project.project_id
   role       = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
   member     = "serviceAccount:service-${element(data.google_project.service_project.*.number, count.index)}@container-engine-robot.iam.gserviceaccount.com"
+}
+
+# Create a NAT router
+resource "google_compute_router" "nat" {
+  count   = var.create_nat_routers ? length(var.nat_router_regions) : 0
+  name    = "nat-router-${element(var.nat_router_regions, count.index)}"
+  region  = element(var.nat_router_regions, count.index)
+  network = google_compute_network.network.id
+  project = data.google_project.project.project_id
+
+}
+
+resource "google_compute_address" "nat" {
+  count  = var.create_nat_routers ? length(var.nat_router_regions) * 2 : 0
+  name   = "nat-manual-ip-${count.index}"
+  region = element(var.nat_router_regions, floor(count.index / 2)) 
+  project = data.google_project.project.project_id
+
+}
+
+resource "google_compute_router_nat" "nat_manual" {
+  count  = var.create_nat_routers ? length(var.nat_router_regions) : 0
+  name   = "nat-${element(var.nat_router_regions, count.index)}"
+  router = element(google_compute_router.nat.*.name, count.index)
+  region = element(var.nat_router_regions, count.index)
+  project = data.google_project.project.project_id
+
+  nat_ip_allocate_option = "MANUAL_ONLY"
+  nat_ips                = [ element(google_compute_address.nat.*.self_link, count.index), element(google_compute_address.nat.*.self_link, count.index + 1) ]
+
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES"
 }
 
 # Create a default route
