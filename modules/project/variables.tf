@@ -41,6 +41,7 @@ variable "default_role_bindings" {
   type        = list(string)
   default = [
     "roles/apigateway.admin",
+    "roles/bigquery.user",
     "roles/browser",
     "roles/cloudfunctions.admin",
     "roles/cloudkms.admin",
