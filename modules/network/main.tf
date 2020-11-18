@@ -11,7 +11,7 @@ data "google_projects" "projects_in_folder" {
 }
 
 data "google_project" "service_project" {
-  count = length(data.google_projects.projects_in_folder.projects)
+  count = var.number_of_service_projects
   project_id = element(data.google_projects.projects_in_folder.projects[*].project_id, count.index)
 }
 
@@ -59,7 +59,7 @@ resource "google_compute_subnetwork" "subnetwork" {
 # Assign Subnet User privileges
 # Needs to be manually re-run a second time if Subnetwork is re-created
 resource "google_project_iam_member" "subnetuser_cloudservices" {
-  provider   = "google-beta"
+  provider   = google-beta
   count      = var.number_of_service_projects
   project    = data.google_project.project.project_id
   role       = "roles/compute.networkUser"
@@ -67,7 +67,7 @@ resource "google_project_iam_member" "subnetuser_cloudservices" {
 }
 
 resource "google_project_iam_member" "subnetuser_gke" {
-  provider   = "google-beta"
+  provider   = google-beta
   count      = var.number_of_service_projects
   project    = data.google_project.project.project_id
   role       = "roles/compute.networkUser"
@@ -90,7 +90,7 @@ resource "google_project_iam_member" "security_terraform" {
 
 # Assign Host Service Agent User privileges to the Service Project's Google APIs Service Agent with IAM
 resource "google_project_iam_member" "hostagentuser_gke" {
-  provider   = "google-beta"
+  provider   = google-beta
   count      = var.number_of_service_projects
   project    = data.google_project.project.project_id
   role       = "roles/container.hostServiceAgentUser"
@@ -99,7 +99,7 @@ resource "google_project_iam_member" "hostagentuser_gke" {
 
 # Assign Key Encrypter Decrypter privileges to the Service Project's Google APIs Service Agent with IAM
 resource "google_project_iam_member" "kms_gke" {
-  provider   = "google-beta"
+  provider   = google-beta
   count      = var.number_of_service_projects
   project    = data.google_project.project.project_id
   role       = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
