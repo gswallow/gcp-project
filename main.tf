@@ -69,6 +69,9 @@ module "google_network" {
   cidr_block                             = try(each.value.cidr_block, "10.100.0.0/16")
   gcp_regions                            = try(each.value.gcp_regions, ["us-central1", "us-east1", "us-west1"])
   subnet_cidr_suffix                     = try(each.value.subnet_cidr_suffix, 20)
+  create_nat_routers                     = var.create_nat_routers
+  nat_router_regions                     = var.nat_router_regions
+  
   service_project_service_accounts_count = length([for project in var.projects : project.folder_name if project.folder_name == each.value.parent_folder_name])
   service_project_service_accounts       = keys({ for account in module.google_project : account.service_account => account if account.folder_id == module.google_folder[each.value.parent_folder_name].folder_name })
   depends_on = [google_organization_iam_member.enable_xpn_host, module.google_folder, module.google_project]

@@ -106,6 +106,37 @@ resource "google_project_iam_member" "kms_gke" {
   member     = "serviceAccount:service-${element(data.google_project.service_project.*.number, count.index)}@container-engine-robot.iam.gserviceaccount.com"
 }
 
+# Create a NAT router
+resource "google_compute_router" "nat" {
+  count   = var.create_nat_routers ? length(var.nat_router_regions) : 0
+  name    = "nat-router-${element(var.nat_router_regions, count.index)}"
+  region  = element(var.nat_router_regions, count.index)
+  network = google_compute_network.network.id
+  project = data.google_project.project.project_id
+
+}
+
+resource "google_compute_address" "nat" {
+  count  = var.create_nat_routers ? length(var.nat_router_regions) * 2 : 0
+  name   = "nat-manual-ip-${count.index}"
+  region = element(var.nat_router_regions, floor(count.index / 2)) 
+  project = data.google_project.project.project_id
+
+}
+
+resource "google_compute_router_nat" "nat_manual" {
+  count  = var.create_nat_routers ? length(var.nat_router_regions) : 0
+  name   = "nat-${element(var.nat_router_regions, count.index)}"
+  router = element(google_compute_router.nat.*.name, count.index)
+  region = element(var.nat_router_regions, count.index)
+  project = data.google_project.project.project_id
+
+  nat_ip_allocate_option = "MANUAL_ONLY"
+  nat_ips                = [ element(google_compute_address.nat.*.self_link, count.index), element(google_compute_address.nat.*.self_link, count.index + 1) ]
+
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES"
+}
+
 # Create a default route
 resource "google_compute_route" "default" {
   name             = "default-route"
