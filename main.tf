@@ -50,9 +50,23 @@ module "google_project" {
   auto_create_network     = each.value.auto_create_network
   role_bindings           = try(each.value.role_bindings, [])
   bucket_name             = replace("${var.org_domain}-${each.value.folder_name}-${each.value.project_name}-terraform", ".", "-")
+  terraform_id            = each.value.identifier
   terraform_impersonators = try(each.value.terraform_impersonators, [])
 
   depends_on = [module.google_folder]
+}
+
+module "google_group" {
+  source = "./modules/group"
+  for_each = { for group in local.groups : group.display_name => group }
+
+  display_name = each.value.display_name
+  description  = try(each.value.description, var.default_group_description)
+  parent_id    = var.parent_id
+  org_domain   = var.org_domain
+  permissions  = try(each.value.permissions, [])
+
+  depends_on = [module.google_project]
 }
 
 module "google_network" {

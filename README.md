@@ -37,6 +37,28 @@ generated for the terraform service account within a project.
 See https://medium.com/google-cloud/a-hitchhikers-guide-to-gcp-service-account-impersonation-in-terraform-af98853ebd37
 for an overview of the concept.
 
+## Creating groups
+Setting up a service account to be able to manage Google Cloud Identity Groups
+is a difficult process.  It may be automatable, but here we are today:
+
+https://gmusumeci.medium.com/how-to-manage-google-groups-users-and-service-accounts-in-gcp-using-terraform-fadf472e574a
+
+So far I've had to add some organization-wide permissions to the terrraform
+service account to get this to work (some of these roles are not covered in the 
+preceeding document):
+
+- Billing Account Administrator
+- Compute Shared VPC Admin
+- Service Account Admin
+- Logging Admin
+- Folder Admin
+- Project Lien Modifier
+- Organization Administrator
+- Project Creator
+- Project IAM Admin
+- Service Usage Admin
+- Storage Admin
+
 ## Usage
 
 Requirements:

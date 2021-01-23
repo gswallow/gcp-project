@@ -77,6 +77,7 @@ variable "default_enabled_apis" {
   description = "A default set of APIs to enable"
   type        = list(string)
   default = [
+    "cloudbilling.googleapis.com",
     "compute.googleapis.com",
     "replicapool.googleapis.com",
     "replicapoolupdater.googleapis.com",
@@ -97,13 +98,21 @@ variable "default_enabled_apis" {
     "containerthreatdetection.googleapis.com",
     "sql-component.googleapis.com",
     "cloudresourcemanager.googleapis.com",
-    "cloudkms.googleapis.com"
+    "cloudkms.googleapis.com",
+    "cloudidentity.googleapis.com",
+    "serviceusage.googleapis.com"
   ]
 }
 
 variable "bucket_name" {
   description = "The name of the S3 bucket for terraform states"
   type        = string
+}
+
+variable "terraform_id" {
+  description = "The project ID used within Terraform to guarantee uniqueness"
+  type        = string
+  default     = null
 }
 
 variable "labels" {
@@ -116,7 +125,8 @@ locals {
   enabled_apis  = length(var.enabled_apis) == 0 ? var.default_enabled_apis : var.enabled_apis
   role_bindings = length(var.role_bindings) == 0 ? var.default_role_bindings : var.role_bindings
   labels = merge({
-    OrganizationId = var.org_name
-    BillingAccount = var.billing_account_id
+    organization_id = replace(lower(var.org_name), ".", "_")
+    billing_account = replace(lower(var.billing_account_id), ".", "_")
+    terraform_id    = replace(lower(var.terraform_id), ".", "_")
   }, var.labels)
 }

@@ -15,6 +15,18 @@ variable "billing_account_id" {
   type        = string
 }
 
+variable "terraform_service_account" {
+  description = "The service account to use for Terraform"
+  type        = string
+  default     = null
+}
+
+variable "parent_id" {
+  description = "The customer ID"
+  type        = string
+  #default     = "customers/XXX"
+}
+
 variable "folders" {
   description = "A list of folders to create"
   type        = list(object({ name = string, viewers = list(string) }))
@@ -161,6 +173,31 @@ variable "nat_router_regions" {
   default     = [ "us-central1" ]
 }
 
+variable "create_groups" {
+  description = "Create groups (requires a service account with permissions)"
+  type        = bool
+  default     = false
+}
+
+variable "groups" {
+  description = "A list of groups to create."
+  type        = list(object({
+                   display_name = string,
+                   description = string,
+                   permissions = list(object({
+                     project_id = string,
+                     project_roles = list(string)
+                   }))
+                 }))
+  default = []
+}
+
+variable "default_group_description" {
+  description = "The default description of created Google IAM groups, if not specified"
+  type = string
+  default = "Managed by Terraform"
+}
+
 variable "labels" {
   description = "Extra tags to apply to created resources"
   type        = map(string)
@@ -168,10 +205,12 @@ variable "labels" {
 }
 
 locals {
+  groups = var.create_groups ? var.groups : []
+
   labels = merge(
     {
-      OrganizationId = var.org_domain
-      BillingAccount = var.billing_account_id
+      organization_id = replace(lower(var.org_domain), ".", "_")
+      billing_account = replace(lower(var.billing_account_id), ".", "_")
     },
   var.labels)
 }
