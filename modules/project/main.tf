@@ -55,14 +55,3 @@ resource "google_service_account_iam_binding" "terraform_impersonate" {
   role               = "roles/iam.serviceAccountTokenCreator"
   members            = var.terraform_impersonators
 }
-
-# Storage bucket for Terraform states
-resource "google_storage_bucket" "terraform" {
-  name     = "${var.bucket_name}-${random_id.project.dec}"
-  location = "US"
-  project  = google_project.project.project_id
-
-  versioning {
-    enabled = true
-  }
-}

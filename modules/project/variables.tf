@@ -36,6 +36,12 @@ variable "role_bindings" {
   default     = []
 }
 
+variable "service_account_elevated_privileges" {
+  description = "Add organization-wide roles to the terraform service account.  Set just once."
+  type        = bool
+  default     = false
+}
+
 variable "default_role_bindings" {
   description = "The default list of roles to bind to the project service account"
   type        = list(string)
@@ -102,11 +108,6 @@ variable "default_enabled_apis" {
     "cloudidentity.googleapis.com",
     "serviceusage.googleapis.com"
   ]
-}
-
-variable "bucket_name" {
-  description = "The name of the S3 bucket for terraform states"
-  type        = string
 }
 
 variable "terraform_id" {

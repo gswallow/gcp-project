@@ -1,21 +1,12 @@
 parent_id = "customers/C02xxxxxx"
 org_domain = "gregongcp.net"
 terraform_service_account = "terraform@np-ops-12324567890.iam.gserviceaccount.com"
+project_id = np-ops-1234567890
 create_groups = true
+
 folders = [ 
-  {
-    name = "non-prod",
-    viewers = [
-      "group:qa@gregongcp.net",
-      "group:support@gregongcp.net"
-    ]
-  },
-  {
-    name = "prod",
-    viewers = [
-      "group:support@gregongcp.net"
-    ]
-  }
+  { name = "non-prod" },
+  { name = "prod" }
 ]
 
 projects = [
@@ -26,6 +17,7 @@ projects = [
     enabled_apis = [],
     auto_create_network = false,
     role_bindings = [],
+    service_account_elevated_privileges = true,
     terraform_impersonators = [
       "user:admin@gregongcp.net",
       "group:devops@gregongcp.net",
@@ -39,6 +31,7 @@ projects = [
     enabled_apis = [],
     auto_create_network = false,
     role_bindings = [],
+    service_account_elevated_privileges = false,
     terraform_impersonators = [
       "user:admin@gregongcp.net",
       "group:devops@gregongcp.net",
@@ -52,6 +45,7 @@ projects = [
     enabled_apis = [],
     auto_create_network = false,
     role_bindings = [],
+    service_account_elevated_privileges = false,
     terraform_impersonators = [
       "user:admin@gregongcp.net",
       "group:devops@gregongcp.net",
@@ -65,6 +59,7 @@ projects = [
     enabled_apis = [],
     auto_create_network = false,
     role_bindings = [],
+    service_account_elevated_privileges = false,
     terraform_impersonators = [
       "user:admin@gregongcp.net",
       "group:devops@gregongcp.net",
@@ -78,6 +73,7 @@ projects = [
     enabled_apis = [],
     auto_create_network = false,
     role_bindings = [],
+    service_account_elevated_privileges = false,
     terraform_impersonators = [
       "user:admin@gregongcp.net",
       "group:sre@gregongcp.net"
@@ -90,6 +86,7 @@ projects = [
     enabled_apis = [],
     auto_create_network = false,
     role_bindings = [],
+    service_account_elevated_privileges = false,
     terraform_impersonators = [
       "user:admin@gregongcp.net",
       "group:sre@gregongcp.net"

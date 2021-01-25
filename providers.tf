@@ -1,11 +1,11 @@
 terraform {
   required_providers {
     google = {
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
       version = "3.53.0"
     }
     random = {
-      source = "hashicorp/random"
+      source  = "hashicorp/random"
       version = "3.0.1"
     }
   }
@@ -13,14 +13,14 @@ terraform {
 
 provider "google" {
   project = var.project_id
-  alias = "tokengen"
+  alias   = "tokengen"
 }
 
 data "google_service_account_access_token" "sa" {
-  count = var.create_groups ? 1 : 0
-  provider = google.tokengen
+  count                  = var.create_groups ? 1 : 0
+  provider               = google.tokengen
   target_service_account = var.terraform_service_account
-  lifetime = "1800s"
+  lifetime               = "1800s"
   scopes = [
     "https://www.googleapis.com/auth/cloud-platform",
     "https://www.googleapis.com/auth/userinfo.email"
