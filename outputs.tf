@@ -2,30 +2,6 @@ output "google_org_id" {
   value = data.google_organization.org.org_id
 }
 
-output "billing_account_id" {
-  value = data.google_billing_account.acct.id
-}
-
-output "billing_account_name" {
-  value = data.google_billing_account.acct.name
-}
-
-output "billing_account_project_ids" {
-  value = data.google_billing_account.acct.project_ids
-}
-
-output "client_config_project" {
-  value = data.google_client_config.client.project
-}
-
-output "client_config_region" {
-  value = data.google_client_config.client.region
-}
-
-output "client_config_zone" {
-  value = data.google_client_config.client.zone
-}
-
 output "client_openid_userinfo" {
   value = data.google_client_openid_userinfo.client.email
 }
@@ -34,6 +10,6 @@ output "terraform_service_accounts" {
   value = { for account in module.google_project : account.service_account => account }
 }
 
-output "nat_ip_addresses" { 
-  value = [ for addresses in module.google_network : addresses.nat_ip_addresses ]
+output "nat_ip_addresses" {
+  value = [for addresses in module.google_network : addresses.nat_ip_addresses]
 }

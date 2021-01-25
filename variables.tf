@@ -15,40 +15,54 @@ variable "billing_account_id" {
   type        = string
 }
 
+variable "terraform_service_account" {
+  description = "The service account to use for Terraform"
+  type        = string
+  default     = null
+}
+
+variable "parent_id" {
+  description = "The customer ID (customers/CXXXXX - run gcloud beta organizations list)"
+  type        = string
+}
+
+variable "project_id" {
+  description = "The project ID of the service account to impersonate"
+  type        = string
+}
+
 variable "folders" {
   description = "A list of folders to create"
-  type        = list(object({ name = string, viewers = list(string) }))
-  default = [
-    {
-      name = "non-prod",
-      viewers = [
-        "user:devopsgal@gregongcp.net",
-        "user:devopsguy@gregongcp.net",
-        "user:sre@gregongcp.net",
-        "user:support@gregongcp.net"
-      ]
-    },
-    {
-      name = "prod",
-      viewers = [
-        "user:sre@gregongcp.net",
-        "user:support@gregongcp.net"
-      ]
-    }
+  type        = list(object({ name = string }))
+  default     = [
+    {name = "non-prod"},
+    {name = "prod"}
   ]
 }
 
 variable "projects" {
   description = "A list of objects including folder names, projects, and IAM principals"
-  type        = list(object({ folder_name = string, project_name = string, identifier = string, enabled_apis = list(string), auto_create_network = bool, role_bindings = list(string), terraform_impersonators = list(string) }))
+  type = list(
+    object({
+      folder_name                         = string,
+      project_name                        = string,
+      identifier                          = string,
+      enabled_apis                        = list(string),
+      auto_create_network                 = bool,
+      role_bindings                       = list(string),
+      service_account_elevated_privileges = bool,
+      terraform_impersonators             = list(string)
+  }))
+
   default = [
     {
-      folder_name         = "non-prod",
-      project_name        = "ops",
-      identifier          = "non-prod-ops",
-      enabled_apis        = [],
-      auto_create_network = false,
-      role_bindings       = []
+      folder_name                         = "non-prod",
+      project_name                        = "ops",
+      identifier                          = "non-prod-ops",
+      enabled_apis                        = [],
+      auto_create_network                 = false,
+      role_bindings                       = []
+      service_account_elevated_privileges = true,
       terraform_impersonators = [
         "user:admin@gregongcp.net",
         "user:devopsgal@gregongcp.net",
@@ -56,12 +70,13 @@ variable "projects" {
       ]
     },
     {
-      folder_name         = "non-prod",
-      project_name        = "dev",
-      identifier          = "non-prod-dev",
-      enabled_apis        = [],
-      auto_create_network = false,
-      role_bindings       = []
+      folder_name                         = "non-prod",
+      project_name                        = "dev",
+      identifier                          = "non-prod-dev",
+      enabled_apis                        = [],
+      auto_create_network                 = false,
+      role_bindings                       = []
+      service_account_elevated_privileges = false,
       terraform_impersonators = [
         "user:admin@gregongcp.net",
         "user:devopsgal@gregongcp.net",
@@ -69,24 +84,26 @@ variable "projects" {
       ]
     },
     {
-      folder_name         = "non-prod",
-      project_name        = "qa",
-      identifier          = "non-prod-qa",
-      enabled_apis        = [],
-      auto_create_network = false,
-      role_bindings       = []
+      folder_name                         = "non-prod",
+      project_name                        = "qa",
+      identifier                          = "non-prod-qa",
+      enabled_apis                        = [],
+      auto_create_network                 = false,
+      role_bindings                       = []
+      service_account_elevated_privileges = false,
       terraform_impersonators = [
         "user:admin@gregongcp.net",
         "user:devopsgal@gregongcp.net",
         "user:devopsguy@gregongcp.net"
       ]
     },
-    { folder_name         = "non-prod",
-      project_name        = "uat",
-      identifier          = "non-prod-uat",
-      enabled_apis        = [],
-      auto_create_network = false,
-      role_bindings       = []
+    { folder_name                         = "non-prod",
+      project_name                        = "uat",
+      identifier                          = "non-prod-uat",
+      enabled_apis                        = [],
+      auto_create_network                 = false,
+      role_bindings                       = []
+      service_account_elevated_privileges = false,
       terraform_impersonators = [
         "user:admin@gregongcp.net",
         "user:devopsgal@gregongcp.net",
@@ -94,24 +111,26 @@ variable "projects" {
       ]
     },
     {
-      folder_name         = "prod",
-      project_name        = "ops",
-      identifier          = "prod-ops",
-      enabled_apis        = [],
-      auto_create_network = false,
-      role_bindings       = []
+      folder_name                         = "prod",
+      project_name                        = "ops",
+      identifier                          = "prod-ops",
+      enabled_apis                        = [],
+      auto_create_network                 = false,
+      role_bindings                       = []
+      service_account_elevated_privileges = false,
       terraform_impersonators = [
         "user:sre@gregongcp.net",
         "user:admin@gregongcp.net"
       ]
     },
     {
-      folder_name         = "prod",
-      project_name        = "prod",
-      identifier          = "prod-prod",
-      enabled_apis        = [],
-      auto_create_network = false,
-      role_bindings       = []
+      folder_name                         = "prod",
+      project_name                        = "prod",
+      identifier                          = "prod-prod",
+      enabled_apis                        = [],
+      auto_create_network                 = false,
+      role_bindings                       = []
+      service_account_elevated_privileges = false,
       terraform_impersonators = [
         "user:sre@gregongcp.net",
         "user:admin@gregongcp.net"
@@ -122,7 +141,19 @@ variable "projects" {
 
 variable "networks" {
   description = "A list of shared VPC networks to create"
-  type        = list(object({ name = string, host_project_identifier = string, parent_folder_name = string, auto_create_subnets = bool, routing_mode = string, delete_default_routes_on_create = string, cidr_block = string, gcp_regions = list(string), subnet_cidr_suffix = number }))
+  type = list(
+    object({
+      name                            = string,
+      host_project_identifier         = string,
+      parent_folder_name              = string,
+      auto_create_subnets             = bool,
+      routing_mode                    = string,
+      delete_default_routes_on_create = string,
+      cidr_block                      = string,
+      gcp_regions                     = list(string),
+      subnet_cidr_suffix              = number
+  }))
+
   default = [
     {
       name                            = "non-prod",
@@ -158,7 +189,32 @@ variable "create_nat_routers" {
 variable "nat_router_regions" {
   description = "The list of regions in which NAT routers will be configured (additonal costs apply)"
   type        = list(string)
-  default     = [ "us-central1" ]
+  default     = ["us-central1"]
+}
+
+variable "create_groups" {
+  description = "Create groups (requires a service account with permissions)"
+  type        = bool
+  default     = false
+}
+
+variable "groups" {
+  description = "A list of groups to create."
+  type = list(object({
+    display_name = string,
+    description  = string,
+    permissions = list(object({
+      project_id    = string,
+      project_roles = list(string)
+    }))
+  }))
+  default = []
+}
+
+variable "default_group_description" {
+  description = "The default description of created Google IAM groups, if not specified"
+  type        = string
+  default     = "Managed by Terraform"
 }
 
 variable "labels" {
@@ -168,10 +224,12 @@ variable "labels" {
 }
 
 locals {
+  groups = var.create_groups ? var.groups : []
+
   labels = merge(
     {
-      OrganizationId = var.org_domain
-      BillingAccount = var.billing_account_id
+      organization_id = replace(lower(var.org_domain), ".", "_")
+      billing_account = replace(lower(var.billing_account_id), ".", "_")
     },
   var.labels)
 }
