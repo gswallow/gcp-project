@@ -12,7 +12,7 @@ terraform {
 }
 
 provider "google" {
-  project = var.project_id
+  project = var.create_groups ? var.project_id : null
   alias   = "tokengen"
 }
 

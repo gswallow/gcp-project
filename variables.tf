@@ -29,6 +29,7 @@ variable "parent_id" {
 variable "project_id" {
   description = "The project ID of the service account to impersonate"
   type        = string
+  default     = null
 }
 
 variable "folders" {
